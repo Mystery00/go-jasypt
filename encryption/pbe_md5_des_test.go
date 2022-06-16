@@ -24,10 +24,4 @@ func TestPBEWithMD5AndDES(t *testing.T) {
 		return
 	}
 	t.Logf(`decrypted: %s`, decrypted)
-
-	decrypt, err := encryptor.Decrypt(`oETK8sAv4XegRMrywC/hd7nBR0B0Ajka/MKLFoOuXMVGx78PG9jpRw==`)
-	if err != nil {
-		t.Error(err)
-	}
-	t.Log(decrypt)
 }

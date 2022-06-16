@@ -2,6 +2,7 @@ package encryption
 
 import (
 	"bytes"
+	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
 	"crypto/md5"
@@ -49,5 +50,30 @@ func desDecrypt(encrypted, key, iv []byte) ([]byte, error) {
 	origData := make([]byte, len(encrypted))
 	blockMode.CryptBlocks(origData, encrypted)
 	origData = pKCS5UnPadding(origData)
+	return origData, nil
+}
+
+func aes256Encrypt(origData, key, iv []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockSize := block.BlockSize()
+	origData = pKCS5Padding(origData, blockSize)
+	encrypted := make([]byte, len(origData))
+	blockMode := cipher.NewCBCEncrypter(block, iv)
+	blockMode.CryptBlocks(encrypted, origData)
+	return encrypted, nil
+}
+
+func aes256Decrypt(encrypted, key, iv []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockMode := cipher.NewCBCDecrypter(block, iv)
+	origData := make([]byte, len(encrypted))
+	blockMode.CryptBlocks(origData, encrypted)
+	//origData = pKCS5UnPadding(origData)
 	return origData, nil
 }

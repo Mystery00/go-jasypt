@@ -1,42 +1,44 @@
 package encryption
 
 import (
+	"crypto/sha512"
 	"encoding/base64"
+	"golang.org/x/crypto/pbkdf2"
 	"regexp"
 )
 
-type PBEWithMD5AndDES struct {
+type PBEWithHMACSHA512AndAES_256 struct {
 	config EncryptorConfig
 }
 
-func (enc *PBEWithMD5AndDES) Encrypt(message string) (string, error) {
+func (enc *PBEWithHMACSHA512AndAES_256) Encrypt(message string) (string, error) {
 	saltGenerator := enc.config.SaltGenerator
 	ivGenerator := enc.config.IvGenerator
 	password := enc.config.Password
+	algorithmBlockSize := 16
+	keyObtentionIterations := 1000
 
-	salt, err := saltGenerator.GenerateSalt(8)
+	salt, err := saltGenerator.GenerateSalt(algorithmBlockSize)
 	if err != nil {
 		return "", err
 	}
-	iv, err := ivGenerator.GenerateIv(8)
+	iv, err := ivGenerator.GenerateIv(algorithmBlockSize)
 	if err != nil {
 		return "", err
 	}
-	//不知道什么意思
-	padNum := 8 - (len(message) % 8)
+
+	padNum := algorithmBlockSize - (len(message) % algorithmBlockSize)
 	for i := 0; i <= padNum; i++ {
 		message += string(rune(padNum))
 	}
-	//做MD5
-	dk, iv := getMd5DerivedKey(password, salt, 1000)
-	//做DES加密
-	encText, err := desEncrypt([]byte(message), dk, iv)
+	dk := pbkdf2.Key([]byte(password), salt, keyObtentionIterations, 32, sha512.New)
+	encText, err := aes256Encrypt([]byte(message), dk, iv)
 	if err != nil {
 		return "", err
 	}
 	result := encText
 	if ivGenerator.IncludePlainIvInEncryptionResults() {
-		result = append(salt, result...)
+		result = append(iv, result...)
 	}
 	if saltGenerator.IncludePlainSaltInEncryptionResults() {
 		result = append(salt, result...)
@@ -46,10 +48,12 @@ func (enc *PBEWithMD5AndDES) Encrypt(message string) (string, error) {
 	return encodeString, nil
 }
 
-func (enc *PBEWithMD5AndDES) Decrypt(message string) (string, error) {
+func (enc *PBEWithHMACSHA512AndAES_256) Decrypt(message string) (string, error) {
 	saltGenerator := enc.config.SaltGenerator
 	ivGenerator := enc.config.IvGenerator
 	password := enc.config.Password
+	algorithmBlockSize := 16
+	keyObtentionIterations := 1000
 
 	//Base64解码
 	encrypted, err := base64.StdEncoding.DecodeString(message)
@@ -59,15 +63,15 @@ func (enc *PBEWithMD5AndDES) Decrypt(message string) (string, error) {
 	var salt []byte
 	var iv []byte
 	if saltGenerator.IncludePlainSaltInEncryptionResults() {
-		salt = encrypted[:8]
-		encrypted = encrypted[8:]
+		salt = encrypted[:algorithmBlockSize]
+		encrypted = encrypted[algorithmBlockSize:]
 	}
 	if ivGenerator.IncludePlainIvInEncryptionResults() {
-		iv = encrypted[:8]
-		encrypted = encrypted[8:]
+		iv = encrypted[:algorithmBlockSize]
+		encrypted = encrypted[algorithmBlockSize:]
 	}
-	dk, iv := getMd5DerivedKey(password, salt, 1000)
-	text, err := desDecrypt(encrypted, dk, iv)
+	dk := pbkdf2.Key([]byte(password), salt, keyObtentionIterations, 32, sha512.New)
+	text, err := aes256Decrypt(encrypted, dk, iv)
 	if err != nil {
 		return "", err
 	}
