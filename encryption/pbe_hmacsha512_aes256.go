@@ -11,6 +11,12 @@ type PBEWithHMACSHA512AndAES_256 struct {
 	config EncryptorConfig
 }
 
+func NewPBEWithHMACSHA512AndAES_256(config EncryptorConfig) *PBEWithHMACSHA512AndAES_256 {
+	return &PBEWithHMACSHA512AndAES_256{
+		config: config,
+	}
+}
+
 func (enc *PBEWithHMACSHA512AndAES_256) Encrypt(message string) (string, error) {
 	saltGenerator := enc.config.SaltGenerator
 	ivGenerator := enc.config.IvGenerator

@@ -7,11 +7,11 @@ import (
 )
 
 func TestPBEWithMD5AndDES(t *testing.T) {
-	encryptor := PBEWithMD5AndDES{config: EncryptorConfig{
+	encryptor := NewPBEWithMD5AndDES(EncryptorConfig{
 		Password:      "password",
 		SaltGenerator: salt.RandomSaltGenerator{},
 		IvGenerator:   iv.RandomIvGenerator{},
-	}}
+	})
 	encrypted, err := encryptor.Encrypt(`plain text`)
 	if err != nil {
 		t.Error(err)

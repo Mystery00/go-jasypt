@@ -74,6 +74,6 @@ func aes256Decrypt(encrypted, key, iv []byte) ([]byte, error) {
 	blockMode := cipher.NewCBCDecrypter(block, iv)
 	origData := make([]byte, len(encrypted))
 	blockMode.CryptBlocks(origData, encrypted)
-	//origData = pKCS5UnPadding(origData)
+	origData = pKCS5UnPadding(origData)
 	return origData, nil
 }

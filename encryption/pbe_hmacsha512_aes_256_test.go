@@ -7,11 +7,11 @@ import (
 )
 
 func TestPBEWithHMACSHA512AndAES_256(t *testing.T) {
-	encryptor := PBEWithHMACSHA512AndAES_256{config: EncryptorConfig{
+	encryptor := NewPBEWithHMACSHA512AndAES_256(EncryptorConfig{
 		Password:      "password",
 		SaltGenerator: salt.RandomSaltGenerator{},
 		IvGenerator:   iv.RandomIvGenerator{},
-	}}
+	})
 	encrypted, err := encryptor.Encrypt(`plain text`)
 	if err != nil {
 		t.Error(err)

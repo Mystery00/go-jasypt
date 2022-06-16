@@ -9,6 +9,12 @@ type PBEWithMD5AndDES struct {
 	config EncryptorConfig
 }
 
+func NewPBEWithMD5AndDES(config EncryptorConfig) *PBEWithMD5AndDES {
+	return &PBEWithMD5AndDES{
+		config: config,
+	}
+}
+
 func (enc *PBEWithMD5AndDES) Encrypt(message string) (string, error) {
 	saltGenerator := enc.config.SaltGenerator
 	ivGenerator := enc.config.IvGenerator
