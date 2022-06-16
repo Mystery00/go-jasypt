@@ -1,4 +1,4 @@
-module go-jasypt
+module github.com/Mystery00/go-jasypt
 
 go 1.18
 

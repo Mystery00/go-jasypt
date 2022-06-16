@@ -1,8 +1,8 @@
 package encryption
 
 import (
-	"go-jasypt/iv"
-	"go-jasypt/salt"
+	"github.com/Mystery00/go-jasypt/iv"
+	"github.com/Mystery00/go-jasypt/salt"
 )
 
 type EncryptorConfig struct {
