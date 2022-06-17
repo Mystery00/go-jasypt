@@ -7,7 +7,7 @@ GoLang implements jasypt encryption and decryption
 1. you need to import jasypt package:
 
 ```shell
-go get github.com/Mystery00/go-jasypt
+go get -u github.com/Mystery00/go-jasypt
 ```
 
 2. use like this:
