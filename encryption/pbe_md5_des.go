@@ -31,10 +31,6 @@ func (enc *PBEWithMD5AndDES) Encrypt(message string) (string, error) {
 		return "", err
 	}
 
-	padNum := algorithmBlockSize - (len(message) % algorithmBlockSize)
-	for i := 0; i <= padNum; i++ {
-		message += string(rune(padNum))
-	}
 	dk, iv := getMd5DerivedKey(password, salt, keyObtentionIterations)
 	encText, err := desEncrypt([]byte(message), dk, iv)
 	if err != nil {

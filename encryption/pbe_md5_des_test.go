@@ -23,5 +23,5 @@ func TestPBEWithMD5AndDES(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Logf(`decrypted: %s`, decrypted)
+	t.Logf(`decrypted: [%s]`, decrypted)
 }

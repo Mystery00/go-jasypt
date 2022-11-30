@@ -33,10 +33,6 @@ func (enc *PBEWithHMACSHA512AndAES_256) Encrypt(message string) (string, error) 
 		return "", err
 	}
 
-	padNum := algorithmBlockSize - (len(message) % algorithmBlockSize)
-	for i := 0; i <= padNum; i++ {
-		message += string(rune(padNum))
-	}
 	dk := pbkdf2.Key([]byte(password), salt, keyObtentionIterations, 32, sha512.New)
 	encText, err := aes256Encrypt([]byte(message), dk, iv)
 	if err != nil {
