@@ -24,4 +24,13 @@ func TestPBEWithHMACSHA512AndAES_256(t *testing.T) {
 		return
 	}
 	t.Logf(`decrypted: [%s]`, decrypted)
+	decrypted1, err := encryptor.Decrypt("yBC5Tt8PFp+mIoxY69zYfW2f/wxV6ofYMuHGIxd8fxMra/riH78DyMz4zNTCcQ9z")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Logf(`decrypted1: [%s]`, decrypted1)
+	if decrypted1 != `1234567890` {
+		t.Error(`decrypted1 not equal to 1234567890`)
+	}
 }

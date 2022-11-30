@@ -20,4 +20,12 @@ func TestJasypt(t *testing.T) {
 	if decrypt != `plain text` {
 		t.Error(`decrypt failed`)
 	}
+	decrypted1, err := encryptor.Decrypt("yBC5Tt8PFp+mIoxY69zYfW2f/wxV6ofYMuHGIxd8fxMra/riH78DyMz4zNTCcQ9z")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if decrypted1 != `1234567890` {
+		t.Error(`decrypted1 not equal to 1234567890`)
+	}
 }

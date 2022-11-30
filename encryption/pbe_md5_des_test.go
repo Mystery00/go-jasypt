@@ -24,4 +24,13 @@ func TestPBEWithMD5AndDES(t *testing.T) {
 		return
 	}
 	t.Logf(`decrypted: [%s]`, decrypted)
+	decrypted1, err := encryptor.Decrypt("JV2sHqRaH9ys30zTlT/S7LsrweON/KRKwBFNGjG3lYc=")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Logf(`decrypted1: [%s]`, decrypted1)
+	if decrypted1 != `1234567890` {
+		t.Error(`decrypted1 not equal to 1234567890`)
+	}
 }
